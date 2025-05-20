@@ -31,9 +31,12 @@ def get_characteristics(animals_info):
 def serialize_animal(animal_obj):
     name, diet, location, animal_type = animal_obj
     tag_start = '<li class="cards__item">'
+    title = '<div class="card__title">Wire Fox Terrier</div>'
+    paragraph = f"<p class=\"card__text\"><strong>Diet:</strong> {diet}<br/>"\
+                f"<strong>Location:</strong> {location}<br/>"\
+                f"<strong>Type:</strong> {animal_type}<br/></p>"
     tag_end = '</li>'
-    text = f"\nName:{name}<br/>\nDiet:{diet}<br/>\nLocation:{location}<br/>\nType:{animal_type}<br/>\n"
-    final_text = tag_start + text + tag_end
+    final_text = tag_start + title + paragraph + tag_end
     return final_text
 
 
@@ -42,8 +45,6 @@ def read_html(file_path, animals_info):
         index = html_file.read()
         soup = BeautifulSoup(index, 'html.parser')
         target = soup.find('ul', class_="cards")
-        print(target.text)
-        print(type(animals_info))
         content_file = index.replace(target.text, animals_info)
         return content_file
 
