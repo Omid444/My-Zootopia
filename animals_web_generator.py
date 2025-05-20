@@ -15,15 +15,26 @@ def get_characteristics(animals_info):
             name = animal['name']
             diet = animal['characteristics']['diet']
             location = animal['locations'][0]
-            type = animal['characteristics']['type']
-
-            single_animal_info = f"\nName:{name}\nDiet:{diet}\nLocation:{location}\nType:{type}\n"
-            output += single_animal_info
-            #print(output)
-
+            animal_type = animal['characteristics']['type']
+            animal_object = (name, diet, location, animal_type)
+            if all(animal_object):
+                single_animal_info = serialize_animal(animal_object)
+                output += single_animal_info
+                print('output',output)
+            else:
+                continue
         except KeyError:
             continue
     return output
+
+
+def serialize_animal(animal_obj):
+    name, diet, location, animal_type = animal_obj
+    tag_start = '<li class="cards__item">'
+    tag_end = '</li>'
+    text = f"\nName:{name}<br/>\nDiet:{diet}<br/>\nLocation:{location}<br/>\nType:{animal_type}<br/>\n"
+    final_text = tag_start + text + tag_end
+    return final_text
 
 
 def read_html(file_path, animals_info):
@@ -35,6 +46,7 @@ def read_html(file_path, animals_info):
         print(type(animals_info))
         content_file = index.replace(target.text, animals_info)
         return content_file
+
 
 def write_html(file_path, index):
     with open(file_path, "w") as html_file:
