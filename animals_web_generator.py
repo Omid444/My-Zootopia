@@ -1,13 +1,15 @@
 import json
 
+
+from bs4 import BeautifulSoup
 def load_data(file_path):
   """ Loads a JSON file """
   with open(file_path, "r") as handle:
     return json.load(handle)
 
 
-
-def print_characteristics(animals_info):
+def get_characteristics(animals_info):
+    output =''
     for animal in animals_info:
         try:
             name = animal['name']
@@ -15,21 +17,36 @@ def print_characteristics(animals_info):
             location = animal['locations'][0]
             type = animal['characteristics']['type']
 
-            print(f"Name:{name}")
-            print(f"Diet:{diet}")
-            print(f"Location:{location}")
-            print(f"Type:{type}")
+            single_animal_info = f"\nName:{name}\nDiet:{diet}\nLocation:{location}\nType:{type}\n"
+            output += single_animal_info
+            #print(output)
+
         except KeyError:
             continue
+    return output
 
 
+def read_html(file_path, animals_info):
+    with open(file_path, "r") as html_file:
+        index = html_file.read()
+        soup = BeautifulSoup(index, 'html.parser')
+        target = soup.find('ul', class_="cards")
+        print(target.text)
+        print(type(animals_info))
+        content_file = index.replace(target.text, animals_info)
+        return content_file
 
+def write_html(file_path, index):
+    with open(file_path, "w") as html_file:
+        html_file.write(index)
 
 
 def main():
     animals_data = load_data('animals_data.json')
-    print_characteristics(animals_data)
-
+    animals = get_characteristics(animals_data)
+    #print(animals)
+    index = read_html('animals_template.html', animals)
+    write_html('animals_template.html', index)
 
 if __name__ == "__main__":
     main()
